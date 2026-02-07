@@ -1,34 +1,24 @@
-#156502564
-def decode_instructions(encrypted_str: str) -> str:
+#156529281
+def decode_instructions(encrypted_str: str, i=0) -> tuple[str, int]:
     result = ""
-    multiplier = ""
-    bracket_balance = 0
-    substring = ""
-
-    for char in encrypted_str:
-        if char.isdigit() and bracket_balance == 0:
-            multiplier += char
+    multiplier = 0  
+    while i < len(encrypted_str):
+        char = encrypted_str[i]
+        if char.isdigit():
+            multiplier = multiplier * 10 + int(char)
         elif char == '[':
-            if bracket_balance > 0:
-                substring += char
-            bracket_balance += 1
+            substring, next_i = decode_instructions(encrypted_str, i + 1)
+            result += substring * (multiplier if multiplier > 0 else 1)
+            multiplier = 0
+            i = next_i
         elif char == ']':
-            bracket_balance -= 1
-            if bracket_balance > 0:
-                substring += char
-            else:
-                count = int(multiplier) if multiplier else 1
-                result += count * decode_instructions(substring)
-                multiplier = ""
-                substring = ""
-        elif bracket_balance > 0:
-            substring += char
+            return result, i
         else:
             result += char
-
-    return result
-
+        i += 1
+    return result, i
 
 if __name__ == '__main__':
-    comands = input()
-	print(decode_instructions(comands))
+    commands = input()
+    decoded_str, _ = decode_instructions(commands)
+print(decoded_str)
