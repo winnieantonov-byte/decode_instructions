@@ -1,15 +1,16 @@
 #156551479
-def decode_instruction(data):
-    def solve(pos=0):
-        result = ''
-        multiplier = ''
+def decode_instruction(data: str) -> str:
+    def solve(pos: int = 0) -> tuple[str, int]:
+        result: str = ''
+        multiplier: str = ''
         while pos < len(data):
-            char = data[pos]
+            char: str = data[pos]
             if char.isdigit():
                 multiplier += char
             elif char == '[':
                 fragment, pos = solve(pos + 1)
-                result += fragment * int(multiplier if multiplier else 1)
+                count: int = int(multiplier) if multiplier else 1
+                result += fragment * count
                 multiplier = ''
             elif char == ']':
                 return result, pos
@@ -17,9 +18,12 @@ def decode_instruction(data):
                 result += char
             pos += 1
         return result, pos
+    final_result, _ = solve()
+    return final_result
 
-    return solve()[0]
 
 if __name__ == '__main__':
-    print(decode_instruction(input()))
+    commands: str = input()
+    print(decode_instruction(commands))
+
 
